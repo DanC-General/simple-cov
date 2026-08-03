@@ -1,0 +1,4 @@
+---@class FiletypeHandler
+---@field show fun()
+---@field load fun()
+---@field generate fun()

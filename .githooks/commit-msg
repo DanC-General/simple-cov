@@ -1,0 +1,40 @@
+#!/bin/bash
+# 	Confirm that the given commit message conforms to the 'Conventional Commits' standard.
+# 		./commit-msg <commit-msg-fname>
+#	
+#	Daniel Cheng, 23 June 2026
+#
+set -euo pipefail 
+
+msg_fname="$1"
+msg="$(cat "$msg_fname")"
+
+opener_regex="^(feat|fix|docs|style|refactor|test|chore|build|ci|perf)(\(.+\))?!?: [a-zA-Z].{1,72}"
+
+if [[ ! "$msg" =~ $opener_regex ]]; then 
+	echo "Doesn't meet Conventional Commits spec - expected '$(echo "$opener_regex")'"
+	echo """
+	Changes relevant to the API or UI:
+	    feat: Commits that add, adjust or remove a feature to/of/from the API or UI
+	    fix: Commits that fix an API or UI bug of a preceded feat commit
+
+	refactor: Commits that rewrite or restructure code without altering API or UI behavior
+	    perf: Commits are special type of refactor commits that specifically improve performance
+
+	style: Commits that address code style (e.g., white-space, formatting, missing semi-colons) and do not affect application behavior
+
+	test: Commits that add missing tests or correct existing ones
+
+	docs: Commits that exclusively affect documentation
+
+	build: Commits that affect build-related components such as build tools, dependencies, project version, ...
+
+	ci: Commits that affect operational aspects like infrastructure (IaC), deployment scripts, CI/CD pipelines, backups, monitoring, or recovery procedures, ...
+
+	chore: Commits that represent tasks like initial commit, modifying .gitignore, ...
+	"""
+	exit 1
+fi 
+	
+echo "Commit message ''$msg' meets spec - committing."
+exit 0 

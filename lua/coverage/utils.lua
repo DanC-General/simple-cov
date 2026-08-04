@@ -75,7 +75,47 @@ M.coverage_file_loc = function(root_entry)
 		return nil
 	end
 
-	return root .. "/coverage" .. "/lcov.info"
+	return { dir = root .. "/coverage", fname = "lcov.info" }
+end
+
+M.run_in_floating_term = function(cmd, cmd_opts)
+	local width = math.floor(vim.o.columns * 0.8)
+	local height = math.floor(vim.o.lines * 0.8)
+	local col = math.floor((vim.o.columns - width) / 2)
+	local row = math.floor((vim.o.lines - height) / 2)
+
+	local buf = vim.api.nvim_create_buf(false, true)
+
+	local opts = {
+		relative = "editor",
+		width = width,
+		height = height,
+		col = col,
+		row = row,
+		style = "minimal",
+		border = "rounded",
+	}
+
+	local win = vim.api.nvim_open_win(buf, true, opts)
+
+	vim.api.nvim_set_current_buf(buf)
+
+	vim.bo[buf].bufhidden = "wipe"
+	vim.wo[win].number = false
+	vim.wo[win].relativenumber = false
+
+	vim.fn.termopen(
+		cmd,
+		vim.tbl_extend("force", cmd_opts, {
+			on_exit = function(_, code)
+				vim.schedule(function()
+					vim.notify(("Process exited with code %d"):format(code))
+				end)
+			end,
+		})
+	)
+
+	vim.cmd("startinsert")
 end
 
 return M

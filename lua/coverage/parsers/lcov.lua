@@ -1,5 +1,6 @@
 local M = {}
 
+---@return table<string, CoverageData>
 M.parse_lcov = function(lcov_file)
 	local files = {}
 	local current

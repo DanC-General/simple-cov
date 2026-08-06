@@ -56,15 +56,47 @@ M.coverage_file = function(root_entry)
 		return
 	end
 
+	if vim.fn.isdirectory(cd) ~= 1 then
+		vim.notify("Failed to load coverage directory" .. cd .. ".", vim.log.levels.WARN)
+		return nil
+	end
+
 	-- TODO: support other coverage ftypes
 	local cf = cd .. "/lcov.info"
 
-	if vim.fn.isdirectory(cf) ~= 1 then
-		vim.notify("Failed to load coverage file" .. cf .. ".", vim.log.levels.WARN)
+	local stat = vim.uv.fs_stat(cf)
+
+	if stat and stat.type ~= "file" then
+		vim.notify("Error loading coverage file" .. cf .. ".", vim.log.levels.WARN)
 		return nil
 	end
 
 	return cf
+end
+
+M.floating_window = function()
+	local buf = vim.api.nvim_create_buf(false, true)
+
+	local width = math.floor(vim.o.columns * 0.8)
+	local height = math.floor(vim.o.lines * 0.8)
+
+	local col = math.floor((vim.o.columns - width) / 2)
+	local row = math.floor((vim.o.lines - height) / 2)
+
+	local win = vim.api.nvim_open_win(buf, true, {
+		relative = "editor",
+		width = width,
+		height = height,
+		col = col,
+		row = row,
+		style = "minimal",
+		border = "rounded",
+	})
+
+	return {
+		buf = buf,
+		win = win,
+	}
 end
 
 M.coverage_file_loc = function(root_entry)
@@ -79,30 +111,11 @@ M.coverage_file_loc = function(root_entry)
 end
 
 M.run_in_floating_term = function(cmd, cmd_opts)
-	local width = math.floor(vim.o.columns * 0.8)
-	local height = math.floor(vim.o.lines * 0.8)
-	local col = math.floor((vim.o.columns - width) / 2)
-	local row = math.floor((vim.o.lines - height) / 2)
-
-	local buf = vim.api.nvim_create_buf(false, true)
-
-	local opts = {
-		relative = "editor",
-		width = width,
-		height = height,
-		col = col,
-		row = row,
-		style = "minimal",
-		border = "rounded",
-	}
-
-	local win = vim.api.nvim_open_win(buf, true, opts)
+	local fw = M.floating_window()
+	local buf = fw.buf
+	local win = fw.win
 
 	vim.api.nvim_set_current_buf(buf)
-
-	vim.bo[buf].bufhidden = "wipe"
-	vim.wo[win].number = false
-	vim.wo[win].relativenumber = false
 
 	vim.fn.termopen(
 		cmd,
@@ -116,6 +129,24 @@ M.run_in_floating_term = function(cmd, cmd_opts)
 	)
 
 	vim.cmd("startinsert")
+end
+
+---@param content table
+M.buf_append = function(buf, content)
+	local line_count = vim.api.nvim_buf_line_count(buf)
+	vim.api.nvim_buf_set_lines(buf, line_count, line_count, false, content)
+end
+
+--- Takes an absolute path and returns the path relative to the project directory containing 'entry_re'.
+--- If 'path' is not in the project directory, it will be returned unaltered.
+---@param path string
+---@param proj_path string
+---@return string
+M.get_project_rel_path = function(path, proj_path)
+	vim.notify(proj_path, path)
+
+	local rel_path, c = string.gsub(path, proj_path, "")
+	return rel_path
 end
 
 return M

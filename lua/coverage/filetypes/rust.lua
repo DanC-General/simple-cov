@@ -2,8 +2,10 @@ local M = {}
 
 local utils = require("coverage.utils")
 local config = require("coverage.config")
+local lcov = require("coverage.parsers.lcov")
+local display = require("coverage.display")
 
-function M.load()
+M.load = function()
 	local f = utils.coverage_file(config.opts.filetype.rust.root_entry)
 
 	if f == nil then
@@ -11,12 +13,27 @@ function M.load()
 	end
 	vim.notify(f)
 end
-M.show = function() end
+
+M.show = function()
+	local project_root = utils.project_root(config.opts.filetype.rust.root_entry)
+	local cov_file = utils.coverage_file(config.opts.filetype.rust.root_entry)
+
+	if cov_file == nil or project_root == nil then
+		vim.notify("Couldn't find coverage file in 'show()'.")
+		return
+	end
+
+	local cov_data = lcov.parse_lcov(cov_file)
+	display.display_data(cov_data, project_root)
+end
+
 M.generate = function()
+	vim.notify("Generating...")
 	local gen_cmd = vim.deepcopy(config.opts.filetype.rust.generator_cmd)
 	local cfl = utils.coverage_file_loc(config.opts.filetype.rust.root_entry)
 
 	if cfl == nil then
+		vim.notify("Couldn't find coverage file.")
 		return
 	end
 
@@ -37,7 +54,9 @@ M.generate = function()
 	end
 
 	local cmd_dir = utils.project_root(config.opts.filetype.rust.root_entry)
+
 	if cmd_dir == nil then
+		vim.notify("Couldn't find project root directory.")
 		return
 	end
 

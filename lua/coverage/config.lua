@@ -6,6 +6,16 @@ local M = {
 ---@field filetype table
 local defaults = {
 	filetype = {
+		cs = {
+			root_entry = ".*%.slnx",
+			generator_cmd = {
+				"dotnet",
+				"test",
+				"/p:CollectCoverage=true",
+				"/p:CoverletOutputFormat=lcov",
+				"/p:CoverletOutput=${path}",
+			},
+		},
 		rust = {
 			root_entry = "target",
 			generator_cmd = {
@@ -13,7 +23,7 @@ local defaults = {
 				"llvm-cov",
 				"--lcov",
 				"--output-path",
-				"${file}",
+				"${path}",
 			},
 		},
 	},

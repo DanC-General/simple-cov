@@ -143,10 +143,17 @@ end
 ---@param proj_path string
 ---@return string
 M.get_project_rel_path = function(path, proj_path)
-	vim.notify(proj_path, path)
-
 	local rel_path, c = string.gsub(path, proj_path, "")
 	return rel_path
 end
 
+--- Takes a relative path and returns the path absolute to the project directory containing 'entry_re'.
+--- If 'path' is not in the project directory, it will be returned unaltered.
+---@param path string
+---@param proj_path string
+---@return string
+M.get_project_abs_path = function(path, proj_path)
+	local rel_path, c = string.gsub(path, "^", proj_path)
+	return rel_path
+end
 return M

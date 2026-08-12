@@ -24,5 +24,6 @@
 ---@field end_x integer
 
 ---@class Line
----@field cov number
----@field end_x string
+---@field cov boolean
+---@field sort any
+---@field content string

@@ -34,3 +34,10 @@
 
 ---@class Config
 ---@field filetype table<string, FiletypeConfig>
+
+---@class UserFiletypeConfig
+---@field root_entry? string
+---@field generator_cmd? string[]
+
+---@class UserConfig
+---@field filetype? table<string, UserFiletypeConfig>

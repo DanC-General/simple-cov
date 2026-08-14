@@ -29,7 +29,7 @@ local M = {
 	opts = defaults,
 }
 
----@param user_opts Config?
+---@param user_opts UserConfig?
 function M.setup(user_opts)
 	if user_opts ~= nil then
 		M.opts = vim.tbl_deep_extend("force", M.opts, user_opts)

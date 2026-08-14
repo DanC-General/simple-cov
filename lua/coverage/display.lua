@@ -250,16 +250,17 @@ M.handle_enter = function(win, buf, origin_win, proj_path, selected, path_map, w
 			end
 		end
 	else
-		if selected[line] then
-			local num_lines = selected[line].num_lines
+		vim.notify(vim.inspect(selected))
+		if selected[rpath] then
+			local num_lines = selected[rpath].num_lines
 			vim.api.nvim_buf_set_lines(buf, line, line + num_lines, false, {})
-			selected[line] = nil
+			selected[rpath] = nil
 		else
 			for _, c in pairs(path_map) do
 				if c.path == rpath then
 					local num_lines = M.write_functions(c.data, win_width, line, buf)
 					if num_lines > 0 then
-						selected[line] = { start = line, num_lines = num_lines, path = c.path }
+						selected[rpath] = { start = line, num_lines = num_lines, path = c.path }
 					end
 				end
 			end

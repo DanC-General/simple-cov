@@ -1,0 +1,6 @@
+coverage.generate()	simple-cov.txt	/*coverage.generate()*
+coverage.setup()	simple-cov.txt	/*coverage.setup()*
+coverage.show()	simple-cov.txt	/*coverage.show()*
+nvim-coverage-setup	simple-cov.txt	/*nvim-coverage-setup*
+simple-cov	simple-cov.txt	/*simple-cov*
+simple-cov-lua-api	simple-cov.txt	/*simple-cov-lua-api*

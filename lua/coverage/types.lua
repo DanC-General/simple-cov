@@ -1,6 +1,5 @@
 ---@class FiletypeHandler
 ---@field show fun()
----@field load fun()
 ---@field generate fun()
 
 ---@class FunctionCoverage
@@ -15,7 +14,8 @@
 
 ---@class CoverageData
 ---@field path string
----@field lines table<integer, integer> -- line number -> hit count
+---line_num, count
+---@field lines table<integer, integer>
 ---@field functions table<string, FunctionCoverage>
 ---@field branches BranchCoverage[]
 

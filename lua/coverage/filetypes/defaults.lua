@@ -5,16 +5,8 @@ local config = require("coverage.config")
 local lcov = require("coverage.parsers.lcov")
 local display = require("coverage.display")
 
----@param ftc FiletypeConfig
-M.load = function(ftc)
-	local f = utils.coverage_file(ftc.root_entry)
-
-	if f == nil then
-		return
-	end
-	vim.notify(f)
-end
-
+--- Reads the coverage file from the expected location,
+--- and displays the information in an interactive floating window.
 ---@param ftc FiletypeConfig
 M.show = function(ftc)
 	local project_root = utils.project_root(ftc.root_entry)
@@ -29,6 +21,8 @@ M.show = function(ftc)
 	display.display_data(cov_data, project_root)
 end
 
+--- Runs the command to create the coverage file in the expected
+--- project location, shown to the user in a non-interactive floating window.
 ---@param ftc FiletypeConfig
 M.generate = function(ftc)
 	vim.notify("Generating...")

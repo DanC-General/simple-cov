@@ -43,3 +43,5 @@ coverage.generate()
                                                              *coverage.show()*
 coverage.show()
 	Displays a report of the coverage file information.
+
+vim:tw=78:ts=8:ft=help:norl:

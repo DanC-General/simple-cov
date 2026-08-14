@@ -1,0 +1,45 @@
+================================================================================
+INTRODUCTION                                                   *simple-cov*
+
+Simple-cov if a project-oriented test coverage plugin that can create and interpret lcov reports.
+
+  1. Setup...............................................|simple-cov-setup|
+  2. Lua API...........................................|simple-cov-lua-api|
+
+================================================================================
+SETUP                                                    *nvim-coverage-setup*
+
+                                                            *coverage.setup()*
+coverage.setup({opts})
+    Initial setup function. Must be called by the user to enable the plugin.
+
+    Usage: >
+    
+    require('coverage').setup({
+		-- allows filetype customisation
+    	filetype = {
+			-- the vim ft e.g. cs for c#
+			<vim_ft> = { 
+				-- fs entry regex for how we know we're at the project root e.g. 'target' for rust.
+				root_entry = "ent",
+				-- Command we run to create the coverage file
+				generator_cmd = { 
+					"cmd",
+					"opt1",
+					"opt2"
+				}
+			}
+		}
+    })
+<
+
+================================================================================
+LUA API                                                *simple-cov-lua-api*
+
+                                                            *coverage.generate()*
+coverage.generate()
+    Generates a coverage file. 
+
+                                                             *coverage.show()*
+coverage.show()
+	Displays a report of the coverage file information.

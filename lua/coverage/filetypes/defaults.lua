@@ -64,8 +64,6 @@ M.generate = function(ftc)
 	end
 
 	utils.run_in_floating_term(gen_cmd, { cwd = cmd_dir })
-	-- local result = vim.system(gen_cmd, { cwd = cmd_dir }):wait()
-	-- print(vim.inspect(result))
 end
 
 return M

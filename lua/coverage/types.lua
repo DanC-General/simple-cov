@@ -27,7 +27,10 @@
 ---@field cov boolean
 ---@field sort any
 ---@field content string
----
+
 ---@class FiletypeConfig
 ---@field root_entry string
----@field generator_cmd table<string>
+---@field generator_cmd string[]
+
+---@class Config
+---@field filetype table<string, FiletypeConfig>

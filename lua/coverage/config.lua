@@ -1,9 +1,4 @@
-local M = {
-	--- @type Config
-	opts = {},
-}
----@class Config
----@field filetype table
+---@type Config
 local defaults = {
 	filetype = {
 		cs = {
@@ -29,8 +24,16 @@ local defaults = {
 	},
 }
 
+local M = {
+	---@type Config
+	opts = defaults,
+}
+
+---@param user_opts Config?
 function M.setup(user_opts)
-	M.opts = vim.tbl_deep_extend("force", defaults, user_opts or {})
+	if user_opts ~= nil then
+		M.opts = vim.tbl_deep_extend("force", M.opts, user_opts)
+	end
 end
 
 return M

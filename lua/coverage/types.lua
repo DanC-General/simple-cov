@@ -18,13 +18,22 @@
 ---@field lines table<integer, integer>
 ---@field functions table<string, FunctionCoverage>
 ---@field branches BranchCoverage[]
+---@field summaries FieldSummaries
+
+---@class Summary
+---@field hits integer
+---@field total integer
+
+---@class FieldSummaries
+---@field branches Summary
+---@field lines Summary
+---@field functions Summary
 
 ---@class ColPos
 ---@field start_x integer
 ---@field end_x integer
 
 ---@class Line
----@field cov boolean
 ---@field sort any
 ---@field content string
 

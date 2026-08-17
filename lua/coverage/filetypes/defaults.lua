@@ -25,7 +25,6 @@ end
 --- project location, shown to the user in a non-interactive floating window.
 ---@param ftc FiletypeConfig
 M.generate = function(ftc)
-	vim.notify("Generating...")
 	local gen_cmd = vim.deepcopy(ftc.generator_cmd)
 	local cfl = utils.coverage_file_loc(ftc.root_entry)
 

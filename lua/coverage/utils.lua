@@ -196,12 +196,24 @@ end
 
 --- If str is longer than max_len, removes characters from the start
 --- until it is the desired length, adds a '...' prefix, and returns it.
---- Otherwise, returns str.
+--- Otherwise, returns str. Max_len should be a vim window width.
 --- @param str string
 --- @param max_len integer
 --- @return string
 M.truncate_str_start = function(str, max_len)
-	return #str > max_len and "..." .. str:sub(-max_len) or str
+	-- Account for added ... and a bit of buffer room.
+	max_len = max_len - vim.fn.strdisplaywidth(".....")
+	local text_width = vim.fn.strdisplaywidth(str)
+
+	while vim.fn.strdisplaywidth(str) > max_len do
+		local diff = vim.fn.strdisplaywidth(str) - max_len
+		str = str:sub(diff + 1)
+	end
+
+	if text_width ~= vim.fn.strdisplaywidth(str) then
+		str = "..." .. str
+	end
+	return str
 end
 
 return M

@@ -142,10 +142,10 @@ end
 --- @param buf integer
 --- @param path_map table
 M.write_summaries = function(data, proj_path, win_width, buf, path_map)
-	local align = { "-", "-", "-", "-", "-" }
+	local align = { "-", "", "", "", "" }
 	local htypes = { "s", "s", "s", "s", "s" }
-	local types = { "s", "f", "f", "f", "f" }
-	local field_width_prop = { 0.4, 0.1, 0.1, 0.1, 0.2 }
+	local types = { "s", ".0f", ".0f", ".0f", ".0f" }
+	local field_width_prop = { 0.4, 0.15, 0.15, 0.15, 0.15 }
 	local lines = {}
 
 	local header_fmt = M.format_display_string(field_width_prop, htypes, align, win_width)
@@ -254,7 +254,6 @@ M.write_functions = function(data, win_width, start_line, buf)
 		end
 
 		local line = {
-			cov = fcov.count > 0,
 			content = string.format(fmt, "|--->" .. func_id, ok, fcov.line),
 			sort = fcov.line,
 		}
@@ -311,7 +310,12 @@ M.write_branches = function(data, win_width, start_line, buf)
 
 	for _, bcov in pairs(b) do
 		local line = {
-			content = string.format(fmt, "|--->" .. bcov.block .. "-" .. bcov.branch, ok, bcov.line),
+			content = string.format(
+				fmt,
+				"|--->" .. bcov.block .. "-" .. bcov.branch,
+				bcov.taken and bcov.taken > 0 and "Covered" or "Uncovered",
+				bcov.line
+			),
 			sort = bcov.line,
 		}
 
@@ -339,7 +343,7 @@ M.write_branches = function(data, win_width, start_line, buf)
 	if #lines > 0 then
 		local col = M.get_col_width(width_props, win_width, 2)
 		M.colour_columns(col, lines, buf, start_line + 1, function(text)
-			return tonumber(text) and tonumber(text) > 0
+			return text:gsub("%s+", "") == "Covered"
 		end)
 	end
 
@@ -411,8 +415,11 @@ M.display_data = function(cov_data, proj_path)
 
 	M.write_summaries(cov_data, proj_path, width, buf, path_map)
 
+	vim.bo[buf].modifiable = false
 	vim.keymap.set("n", "<CR>", function()
+		vim.bo[buf].modifiable = true
 		M.handle_enter(win, buf, origin_win, proj_path, selected, path_map, width)
+		vim.bo[buf].modifiable = false
 	end, { buffer = buf })
 
 	vim.keymap.set("n", "<Esc>", function()

@@ -105,7 +105,6 @@ M.floating_window = function()
 		style = "minimal",
 		border = "rounded",
 	})
-
 	return {
 		buf = buf,
 		win = win,
